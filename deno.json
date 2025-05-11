@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "dev": "TARGET_URL=https://api.openai.com PORT=3001 deno run main.ts --env-file --allow-read --allow-write --allow-net --allow-env",
+    "start": "deno run main.ts --env-file --allow-read --allow-write --allow-net --allow-env"
+  }
+}

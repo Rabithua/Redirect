@@ -1,7 +1,7 @@
 // Proxy server from localhost:3000 to OpenAI API
 
-const PORT = Number(Deno.env.get("PORT")) || 3000;
-const TARGET_URL = Deno.env.get("TARGET_URL") || "https://api.openai.com";
+const PORT = Number(Deno.env.get("PORT"));
+const TARGET_URL = Deno.env.get("TARGET_URL");
 
 console.log(
   `Proxy server running on http://localhost:${PORT} -> ${TARGET_URL}`,

@@ -3,11 +3,13 @@
 const PORT = Number(Deno.env.get("PORT"));
 const TARGET_URL = Deno.env.get("TARGET_URL");
 
+const hostname = "0.0.0.0";
+
 console.log(
-  `Proxy server running on http://localhost:${PORT} -> ${TARGET_URL}`,
+  `Proxy server running on http://${hostname}:${PORT} -> ${TARGET_URL}`,
 );
 
-Deno.serve({ port: PORT, hostname: "0.0.0.0" }, async (req: Request) => {
+Deno.serve({ port: PORT, hostname }, async (req: Request) => {
   try {
     // Extract path and query string from request URL
     const url = new URL(req.url);

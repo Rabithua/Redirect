@@ -11,8 +11,26 @@ console.log(
 
 Deno.serve({ port: PORT, hostname }, async (req: Request) => {
   try {
-    // Extract path and query string from request URL
     const url = new URL(req.url);
+
+    console.log(
+      `\n[${new Date().toLocaleString()}] Incoming Request:\n` +
+        `  Method : ${req.method}\n` +
+        `  Path   : ${url.pathname}\n` +
+        `  Query  : ${url.search || "(none)"}\n` +
+        `  From   : ${req.headers.get("x-forwarded-for") || "unknown"}\n` +
+        `  Target : ${TARGET_URL}${url.pathname}${url.search}\n` +
+        `  Headers:\n` +
+        `    ${
+          Array.from(req.headers.entries())
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("\n    ")
+        }` +
+        `\n` +
+        `  Body   : ${req.body ? await req.text() : "(none)"}`,
+    );
+
+    // Extract path and query string from request URL
     const path = url.pathname;
     const query = url.search;
 

@@ -13,6 +13,25 @@ Deno.serve({ port: PORT, hostname }, async (req: Request) => {
   try {
     const url = new URL(req.url);
 
+    // Clone request for logging, so we don't consume the body
+    const reqForLog = req.clone();
+
+    // Prepare body for fetch (only for non-GET/HEAD)
+    let fetchBody: BodyInit | null | undefined = undefined;
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      fetchBody = req.body;
+    }
+
+    // Log request details (body from cloned request)
+    let logBody = "(none)";
+    if (reqForLog.body && req.method !== "GET" && req.method !== "HEAD") {
+      try {
+        logBody = await reqForLog.text();
+      } catch {
+        logBody = "(unreadable)";
+      }
+    }
+
     console.log(
       `\n[${new Date().toLocaleString()}] Incoming Request:\n` +
         `  Method : ${req.method}\n` +
@@ -27,7 +46,7 @@ Deno.serve({ port: PORT, hostname }, async (req: Request) => {
             .join("\n    ")
         }` +
         `\n` +
-        `  Body   : ${req.body ? await req.text() : "(none)"}`,
+        `  Body   : ${logBody}`,
     );
 
     // Extract path and query string from request URL
@@ -44,9 +63,7 @@ Deno.serve({ port: PORT, hostname }, async (req: Request) => {
     const response = await fetch(targetUrl, {
       method: req.method,
       headers: headers,
-      body: req.body && req.method !== "GET" && req.method !== "HEAD"
-        ? req.body
-        : undefined,
+      body: fetchBody,
       redirect: "follow",
     });
 
